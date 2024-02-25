@@ -26,22 +26,25 @@ def createCipherAlphabet(day):
 # Translate the numbers into the string using cipher table 
 def translate(str):
     str = str.replace(" ", "")
-    print(str)
+    result = ""
+
     for i in range(0, len(str) - 1, 2):
         two_chars = str[i:i+2]
-        #print(two_chars)
+        result += countChar(int(two_chars))
+    
+    return result
 
-
-# return char shiftet in table 
-def countChar(day, c):
-    index = alphabet.index(c)
-
-    print(alphabet.index(c))
-
+# return char from cipher table  
+def countChar(num):
+    # cannot be created in the cipher table 
+    if num > 49: 
+        return ''
+    return cipherAlphabet[num]
 
 def main():
 
     encrypted_text = []
+    decrypted_text = []
 
     general = ""
 
@@ -51,7 +54,6 @@ def main():
 
     password1 = ""
     password2 = ""
-
 
     for line in sys.stdin:
         if line.startswith('Datum:'):
@@ -65,14 +67,21 @@ def main():
             general = line.split(' ')[1].split()[0]
             print("General:",general)
 
-    for i in encrypted_text:
-        print(i)     
-    translate(encrypted_text[0])
+    # Create cipher table 
     createCipherAlphabet(day) 
-    print(alphabet)
-    print(cipherAlphabet)
-            
+    
+    
+    for i in encrypted_text:
+        decrypted_text.append(translate(i))
 
+    for i in range(0,61):
+        print(f"{i:2}", end=" ")
+    print()
+    for str in decrypted_text:
+        print(" ", end="")
+        for i in range(0, len(str)):
+            print(str[i], end="  ")
+        print()
 
 if __name__ == "__main__":
     main()
