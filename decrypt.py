@@ -57,7 +57,12 @@ def is_czech(word):
     return word.lower() in czech_dictionary
 
 # Todo function that find if the str is prefix of the czech word 
-
+def is_prefix_of_czech_word(prefix):
+    # Check if any word in the Czech dictionary starts with the given prefix
+    for word in czech_dictionary:
+        if word.startswith(prefix.lower()):
+            return True
+    return False
 
 def main():
 
@@ -119,6 +124,20 @@ def main():
         print(f"{word_to_check} is a Czech word.")
     else:
         print(f"{word_to_check} is not a Czech word.")
+    
+    # Example usage
+    word_to_check = "kokot"
+    if is_czech(word_to_check):
+        print(f"{word_to_check} is a Czech word.")
+    else:
+        print(f"{word_to_check} is not a Czech word.")
+    
+    # Example usage
+    word_to_check = "hovn"
+    if is_prefix_of_czech_word(word_to_check):
+        print(f"{word_to_check} is a prefix of Czech word.")
+    else:
+        print(f"{word_to_check} is not a prefix of Czech word.")
 
 
 if __name__ == "__main__":
