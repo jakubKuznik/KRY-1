@@ -48,9 +48,11 @@ def countChar(num):
 
 def LoadCzechDictionary(file):
     with open(file, 'r', encoding='utf-8') as file:
+        dictionary = set()  # Create a local set variable
         for line in file:
             word = line.split('/')[0].strip()
-            czech_dictionary.add(word)
+            dictionary.add(word)
+        return dictionary
 
 # Function to check if a word is Czech
 def is_czech(word):
@@ -65,7 +67,8 @@ def is_prefix_of_czech_word(prefix):
     return False
 
 def main():
-
+    
+    global czech_dictionary
 
     encrypted_text = []
     decrypted_text = []
@@ -100,10 +103,6 @@ def main():
     for i in encrypted_text:
         decrypted_text.append(translate(i))
 
-#    for i in range(1,61):
-#        print(f"{i:2}", end=" ")
-#    print()
-
     for s in decrypted_text:    
         print(" ", end="")
         for i in range(0, len(s)):
@@ -116,28 +115,10 @@ def main():
     print(df)
 
     czech_dictionary = LoadCzechDictionary("Czech.dic")
+    czech_dictionary.add(str(general))
 
+    ### NOW BRUTE FORCE CHANGE THE COLLUMNS BUT LET EVERYTHING TO BE A CZECH WORD 
 
-    # Example usage
-    word_to_check = "hovn"
-    if is_czech(word_to_check):
-        print(f"{word_to_check} is a Czech word.")
-    else:
-        print(f"{word_to_check} is not a Czech word.")
-    
-    # Example usage
-    word_to_check = "kokot"
-    if is_czech(word_to_check):
-        print(f"{word_to_check} is a Czech word.")
-    else:
-        print(f"{word_to_check} is not a Czech word.")
-    
-    # Example usage
-    word_to_check = "hovn"
-    if is_prefix_of_czech_word(word_to_check):
-        print(f"{word_to_check} is a prefix of Czech word.")
-    else:
-        print(f"{word_to_check} is not a prefix of Czech word.")
 
 
 if __name__ == "__main__":
