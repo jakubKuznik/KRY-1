@@ -90,7 +90,40 @@ def letters_in_row(df, general):
                 break
             if all_found: 
                 return i
-        
+
+def switch_columns(df, c1, c2):
+    # Store values from the 2nd column
+    temp_values = df.iloc[:, c1].copy()
+
+    # Assign values from the 4th column to the 2nd column
+    df.iloc[:, c1] = df.iloc[:, c2]
+
+    # Assign stored values to the 4th column
+    df.iloc[:, c2] = temp_values
+
+def get_n_word_in_row(df, n, row):
+    
+    word = ""
+
+    # Split the row by "-"
+    r = df.iloc[row]
+    
+    word_count = 0; 
+    for cell in r:
+        # todo ignore rest of the special chars. 
+        # '.','?','-','/'
+        if cell == '-':
+            word_count += 1
+            if word_count == n: 
+                return word
+            word = ""
+            continue
+        word += cell
+
+
+
+
+
 def main():
     
     global czech_dictionary
@@ -147,13 +180,25 @@ def main():
     ## first find the general 
 
     special_letters = []
-
-    for i in range(0, len(general)):
-        special_letters.append(general[i])
     
     row_general = letters_in_row(df, general)
     print(row_general)
 
+    # print(special_letters)
+    # # First column 
+    # print(df[0])
+    # # first row 
+    # print(df.iloc[0]) 
+    # for cell in df.iloc[0]:
+        # print(cell)
+
+    switch_columns(df, 0,1)
+    print(df)    
+    
+    print("here")
+    # Example usage:
+    nth_word = get_n_word_in_row(df, 1, 1)  # Get the 3rd word from the first row
+    print(nth_word)
 
 
 if __name__ == "__main__":
