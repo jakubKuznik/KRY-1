@@ -18,6 +18,8 @@ cipherAlphabet = [
             '6','7','8','9','0','' ,'' ,'' ,'' , '', 
             ]
 
+czech_dictionary = set()
+
 def createCipherAlphabet(day):
 
     # Create the cipher alphabet with cyclic shift
@@ -43,7 +45,22 @@ def countChar(num):
         return ''
     return cipherAlphabet[num]
 
+
+def LoadCzechDictionary(file):
+    with open(file, 'r', encoding='utf-8') as file:
+        for line in file:
+            word = line.split('/')[0].strip()
+            czech_dictionary.add(word)
+
+# Function to check if a word is Czech
+def is_czech(word):
+    return word.lower() in czech_dictionary
+
+# Todo function that find if the str is prefix of the czech word 
+
+
 def main():
+
 
     encrypted_text = []
     decrypted_text = []
@@ -78,9 +95,9 @@ def main():
     for i in encrypted_text:
         decrypted_text.append(translate(i))
 
-    for i in range(1,61):
-        print(f"{i:2}", end=" ")
-    print()
+#    for i in range(1,61):
+#        print(f"{i:2}", end=" ")
+#    print()
 
     for s in decrypted_text:    
         print(" ", end="")
@@ -91,8 +108,17 @@ def main():
         print()
 
     df = pd.read_csv(io.StringIO(csv), header=None, sep=';')
-    print(csv) 
     print(df)
+
+    czech_dictionary = LoadCzechDictionary("Czech.dic")
+
+
+    # Example usage
+    word_to_check = "hovn"
+    if is_czech(word_to_check):
+        print(f"{word_to_check} is a Czech word.")
+    else:
+        print(f"{word_to_check} is not a Czech word.")
 
 
 if __name__ == "__main__":
