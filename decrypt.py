@@ -66,6 +66,31 @@ def is_prefix_of_czech_word(prefix):
             return True
     return False
 
+# Create csv from decrypted text so it can be easily moved to pandas 
+def build_csv(decrypted_text):
+    csv = ""
+    for s in decrypted_text:    
+        for i in range(0, len(s)):
+            csv += s[i] + ";"
+        csv += "\n"
+    return csv
+
+# find row where there is general keywoard 
+def letters_in_row(df, general):
+
+    special_char = []
+    for i in range(0,len(general)):
+        special_char.append(general[i])
+
+    for i, row in df.iterrows():
+        all_found = True 
+        for j in special_char: 
+            if j not in df.iloc[i].values:
+                all_found = False 
+                break
+            if all_found: 
+                return i
+        
 def main():
     
     global czech_dictionary
@@ -74,6 +99,8 @@ def main():
     decrypted_text = []
 
     df = pd.DataFrame()
+
+    # csv purpose is for easy pandas dataframe creation
     csv = ""
 
     general = ""
@@ -85,6 +112,7 @@ def main():
     password1 = ""
     password2 = ""
 
+    # Parse the encrypted file 
     for line in sys.stdin:
         if line.startswith('Datum:'):
             date_str = line.split(':')[1].strip()  
@@ -103,21 +131,28 @@ def main():
     for i in encrypted_text:
         decrypted_text.append(translate(i))
 
-    for s in decrypted_text:    
-        print(" ", end="")
-        for i in range(0, len(s)):
-            csv += s[i] + ";"
-            print(s[i], end="  ")
-        csv += "\n"
-        print()
+    csv = build_csv(decrypted_text)
 
     df = pd.read_csv(io.StringIO(csv), header=None, sep=';')
+    df = df.astype(str)
+    df = df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
+
     print(df)
 
     czech_dictionary = LoadCzechDictionary("Czech.dic")
     czech_dictionary.add(str(general))
 
     ### NOW BRUTE FORCE CHANGE THE COLLUMNS BUT LET EVERYTHING TO BE A CZECH WORD 
+
+    ## first find the general 
+
+    special_letters = []
+
+    for i in range(0, len(general)):
+        special_letters.append(general[i])
+    
+    row_general = letters_in_row(df, general)
+    print(row_general)
 
 
 
