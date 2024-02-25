@@ -2,6 +2,8 @@ import sys
 import pandas as pd 
 import io
 from llist import dllist
+import itertools
+import unicodedata
 
 alphabet = [
             'A','B','C','Č','D','E','Ě','F','G','H',
@@ -57,30 +59,38 @@ def countChar(num):
         return ''
     return str(cipherAlphabet[num])
 
+
+def remove_diacritics(text):
+    return ''.join(c for c in unicodedata.normalize('NFKD', text) if not unicodedata.combining(c))
+
+
 def LoadCzechDictionary(file):
     with open(file, 'r', encoding='utf-8') as file:
         dictionary = set()  # Create a local set variable
         for line in file:
             word = line.split('/')[0].strip()
-            dictionary.add(word)
+            dictionary.add(remove_diacritics(word))
         return dictionary
 
 # Function to check if a word is Czech
 def is_czech(word):
     return word.lower() in czech_dictionary
 
-# Todo function that find if the str is prefix of the czech word 
+# function that find if the str is prefix of the czech word 
 def is_prefix_of_czech_word(prefix):
+    normalized_prefix = remove_diacritics(prefix)
     # Check if any word in the Czech dictionary starts with the given prefix
     for word in czech_dictionary:
-        if word.startswith(prefix.lower()):
+        if word.startswith(normalized_prefix.lower()):
             return True
     return False
 
+# Check if any word in the Czech dictionary starts with the given prefix
 def is_substring_of_czech_word(substring):
-    # Check if any word in the Czech dictionary starts with the given prefix
+    normalized_substring = remove_diacritics(substring)
+
     for word in czech_dictionary:
-        if substring in word:
+        if normalized_substring in word:
             return True
     return False
 
@@ -188,7 +198,6 @@ def check_if_czech_prefix(df, fr, to):
 # in DF from a to b check if all word in all rows are substring  
 def check_if_czech_substring(df, fr, to):
 
-    print("check subs " + str(fr) +  " " + str(to)) 
     index = 0
     for r in df.iloc:
         word_lists = words_from_to(df, index, fr, to)
@@ -205,6 +214,7 @@ def main():
 
     encrypted_text = []
     decrypted_text = []
+    ll = []
 
     df = pd.DataFrame()
 
@@ -238,12 +248,6 @@ def main():
 
     for i in encrypted_text:
         decrypted_text.append(translate(i))
-#        if '0' in translate(i):
-#            print("")
-#        if '4' in translate(i):
-#            print("CTYRKA")
-#        if 'O' in translate(i):
-#            print("Heureka ")
 
     csv = build_csv(decrypted_text)
 
@@ -252,43 +256,46 @@ def main():
     df = df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
 
     print(df)
-
     czech_dictionary = LoadCzechDictionary("Czech.dic")
     czech_dictionary.add(str(general))
-    ### NOW BRUTE FORCE CHANGE THE COLLUMNS BUT LET EVERYTHING TO BE A CZECH WORD 
 
+
+    ### NOW BRUTE FORCE CHANGE THE COLLUMNS BUT LET EVERYTHING TO BE A CZECH WORD 
     ## first find the general 
 
-    #general = "xkuznio4"
-    print(general)
     row_general = letters_in_row(df, general)
 
-    first_column = 0
-    last_column = -1
-    bad = True
-
-
-    new_df = df.iloc[:, [1, 5]]
-    print(new_df)
-
-    dll = dllist()
-
     for c in range(0, len(general)):
-        dll.append(find_letter_column(df, str(general[c]), row_general))
+        ll.append(find_letter_column(df, str(general[c]), row_general))
 
-    for item in dll:
-        print(item)
+    combinations = itertools.product(*ll)
+    result = [list(combo) for combo in combinations]
 
-#    switch_columns(df, 0,1)
-#    print(df)    
-    
-#    print("here")
-#    # Example usage:
-#    nth_word = get_n_word_in_row(df, 1, 1)  # Get the 3rd word from the first row
-#    print(nth_word)
+    used_index = []
+    res_df = pd.DataFrame()
 
-#    print(check_if_czech_prefix(df,0, 0))
-#    print(words_from_to(df, 0, 0, 10))
+    ## Find the general word in the text 
+    counter = 0 
+    for combo in result:  
+        # Initialize a temporary DataFrame for the current combination
+        temp_df = pd.DataFrame()
+
+        # Iterate over the indices in the current combination
+        for i in combo:
+            # Append the column to the temporary DataFrame
+            temp_df[i] = df.iloc[:, i]
+        
+        # Check if the combination meets some condition
+        if check_if_czech_substring(temp_df, 0, combo[0]):
+            used_index = combo
+            res_df = pd.concat([res_df, temp_df], axis=1)
+            print("heureka")
+            break
+
+    print(res_df)
+    print(used_index)
+
+
 
 if __name__ == "__main__":
     main()
