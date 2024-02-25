@@ -1,4 +1,6 @@
 import sys
+import pandas as pd 
+import io
 
 alphabet = [
             'A','B','C','Č','D','E','Ě','F','G','H',
@@ -46,6 +48,9 @@ def main():
     encrypted_text = []
     decrypted_text = []
 
+    df = pd.DataFrame()
+    csv = ""
+
     general = ""
 
     day     = ""
@@ -70,18 +75,25 @@ def main():
     # Create cipher table 
     createCipherAlphabet(day) 
     
-    
     for i in encrypted_text:
         decrypted_text.append(translate(i))
 
-    for i in range(0,61):
+    for i in range(1,61):
         print(f"{i:2}", end=" ")
     print()
-    for str in decrypted_text:
+
+    for s in decrypted_text:    
         print(" ", end="")
-        for i in range(0, len(str)):
-            print(str[i], end="  ")
+        for i in range(0, len(s)):
+            csv += s[i] + ";"
+            print(s[i], end="  ")
+        csv += "\n"
         print()
+
+    df = pd.read_csv(io.StringIO(csv), header=None, sep=';')
+    print(csv) 
+    print(df)
+
 
 if __name__ == "__main__":
     main()
