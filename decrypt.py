@@ -5,6 +5,7 @@ from llist import dllist
 import itertools
 import unicodedata
 import time
+import re
 
 alphabet = [
             'A','B','C','Č','D','E','Ě','F','G','H',
@@ -264,6 +265,7 @@ def check_if_czech_prefix(df, fr, to):
         word_lists = words_from_to(df, index, fr, to)
         print(word_lists)
         for w in word_lists: 
+            w = re.sub(r'[0-9.?/]', '', w) 
             if is_prefix_of_czech_word(w) == False: 
                 print("not a czec prefix: " + " " + w)
                 return False
@@ -387,6 +389,10 @@ def main():
         combi = set()
         combi = [(i, j) for i in unused_indices for j in unused_indices if i != j]  # Generate combinations for all existing pairs
         values = [res_df.iloc[0, i] for i in range(res_df.shape[1])]
+
+        if not combi:
+            break
+
         for combination in combi:
             c = c+1
             temp_df = res_df.copy()
@@ -404,7 +410,7 @@ def main():
                 break
             else:
                 kulo = True
-
+                
     print("SOLUTION:")
     print(res_df)
     
