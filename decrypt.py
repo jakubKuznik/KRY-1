@@ -4,6 +4,7 @@ import io
 from llist import dllist
 import itertools
 import unicodedata
+import time
 
 alphabet = [
             'A','B','C','Č','D','E','Ě','F','G','H',
@@ -205,27 +206,52 @@ def check_double_space(df, fr, to):
             if prev == "XXX":
                 prev = str(c)
             if prev == "-" and str(c) == "-":
+                print("DOUBLE SPACE:" + r)
                 return False
             prev = c
     return True
 
+## TODO THIS HAS TO BE CHANNGED BASED ON YOUR USECASE 
 def check_manuall_fix(df, fr, to):
-    print("CHECK MANNUALL")
     index = 0
     for r in df.iloc:
         word_lists = words_from_to(df, index, fr, to)
-        for w in word_lists: 
-            if w == "přio":
-                print(word_lists) 
+        word = word_lists[1]
+        # Manuall checks 
+        if len(word_lists) > 2: 
+            if word_lists[1] == "pri" and word_lists[2] == '':
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
                 return False
-            elif w == "pří":
-                print(word_lists) 
+            elif word_lists[1] == "prio": 
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
                 return False
-            elif w == "pri":
-                print(word_lists) 
+            elif word_lists[1] == "pripraven" and word_lists[2] == 'pode': 
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
                 return False
-            elif w == "při":
-                print(word_lists) 
+            elif word_lists[1] == "pripraven" and word_lists[2] == 'podo': 
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
+                return False
+            elif word_lists[1] == "pripraven" and word_lists[2] == 'podz': 
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
+                return False
+            elif word_lists[1] == "pripraven" and word_lists[2] == 'podpe': 
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
+                return False
+        if len(word_lists) >3:
+            if word_lists[1] == "pripraven" and word_lists[2] == 'p' and word_lists[3] == '':
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
+                return False
+        if len(word_lists) > 5:
+            if word_lists[1] == "pripraven" and word_lists[4] == 'oper' and word_lists[5] == '':
+                print("MANNUALL DECLINE: ", end="")
+                print(word_lists)
                 return False
         index += 1
     return True
@@ -236,8 +262,10 @@ def check_if_czech_prefix(df, fr, to):
     index = 0
     for r in df.iloc:
         word_lists = words_from_to(df, index, fr, to)
+        print(word_lists)
         for w in word_lists: 
             if is_prefix_of_czech_word(w) == False: 
+                print("not a czec prefix: " + " " + w)
                 return False
         index += 1
     return True
@@ -257,6 +285,8 @@ def check_if_czech_substring(df, fr, to):
 
 def main():
     
+    start_time = time.time()
+
     global czech_dictionary
 
     encrypted_text = []
@@ -349,193 +379,39 @@ def main():
     print(res_df)
     print(used_index)
 
-    res_df[20] = df.iloc[:,20]
-    used_index.append(20)
-    
-    res_df[15] = df.iloc[:,15]
-    used_index.append(15)
-    
-    res_df[26] = df.iloc[:,26]
-    used_index.append(26)
-    
-    res_df[39] = df.iloc[:,39]
-    used_index.append(39)
-    
-    res_df[23] = df.iloc[:,23]
-    used_index.append(23)
-
-    res_df[1] = df.iloc[:,1]
-    used_index.append(23)
-
-    res_df[29] = df.iloc[:,29]
-    used_index.append(29)
-    
-    res_df[42] = df.iloc[:,42]
-    used_index.append(42)
-    
-    res_df[8] = df.iloc[:,8]
-    used_index.append(8)
-    
-    res_df[48] = df.iloc[:,48]
-    used_index.append(48)
-    
-    res_df[32] = df.iloc[:,32]
-    used_index.append(32)
-    
-    res_df[53] = df.iloc[:,53]
-    used_index.append(53)
-    
-    res_df[11] = df.iloc[:,11]
-    used_index.append(11)
-    
-    res_df[51] = df.iloc[:,51]
-    used_index.append(51)
-
-    res_df[35] = df.iloc[:,35]
-    used_index.append(35)
-    
-    res_df[4] = df.iloc[:,4]
-    used_index.append(4)
-    
-    res_df[14] = df.iloc[:,14]
-    used_index.append(14)
-    
-    res_df[19] = df.iloc[:,19]
-    used_index.append(19)
-    
-    res_df[38] = df.iloc[:,38]
-    used_index.append(38)
-    
-    res_df[7] = df.iloc[:,7]
-    used_index.append(7)
-    
-    res_df[44] = df.iloc[:,44]
-    used_index.append(44)
-    
-    res_df[56] = df.iloc[:,56]
-    used_index.append(56)
-    
-    res_df[41] = df.iloc[:,41]
-    used_index.append(56)
-    
-    res_df[28] = df.iloc[:,28]
-    used_index.append(28)
-    
-    res_df[47] = df.iloc[:,47]
-    used_index.append(47)
-    
-    res_df[59] = df.iloc[:,59]
-    used_index.append(59)
-
-    res_df[0] = df.iloc[:,0]
-    used_index.append(0)
-    
-    res_df[22] = df.iloc[:,22]
-    used_index.append(22)
-    
-    res_df[50] = df.iloc[:,50]
-    used_index.append(50)
-    
-    res_df[10] = df.iloc[:,10]
-    used_index.append(10)
-    
-    res_df[3] = df.iloc[:,3]
-    used_index.append(3)
-    
-    res_df[25] = df.iloc[:,25]
-    used_index.append(25)
-    
-    res_df[52] = df.iloc[:,52]
-    used_index.append(52)
-    
-    res_df[31] = df.iloc[:,31]
-    used_index.append(31)
-    
-    res_df[6] = df.iloc[:,6]
-    used_index.append(6)
-    
-    res_df[37] = df.iloc[:,37]
-    used_index.append(37)
-    
-    res_df[55] = df.iloc[:,55]
-    used_index.append(55)
-
-    res_df[34] = df.iloc[:,34]
-    used_index.append(34)
-    
-    res_df[18] = df.iloc[:,18]
-    used_index.append(18)
-    
-    res_df[13] = df.iloc[:,13]
-    used_index.append(13)
-    
-    res_df[58] = df.iloc[:,58]
-    used_index.append(58)
-    
-    res_df[46] = df.iloc[:,46]
-    used_index.append(46)
-    
-    res_df[21] = df.iloc[:,21]
-    used_index.append(21)
-    
-    res_df[16] = df.iloc[:,16]
-    used_index.append(16)
-    
-    res_df[27] = df.iloc[:,27]
-    used_index.append(27)
-    
-    res_df[40] = df.iloc[:,40]
-    used_index.append(40)
-    
-    res_df[24] = df.iloc[:,24]
-    used_index.append(24)
-    
-    res_df[2] = df.iloc[:,2]
-    used_index.append(2)
-    
-    res_df[30] = df.iloc[:,30]
-    used_index.append(30)
-    
-    res_df[43] = df.iloc[:,43]
-    used_index.append(43)
-    
-    res_df[9] = df.iloc[:,9]
-    used_index.append(9)
-    
-    res_df[49] = df.iloc[:,49]
-    used_index.append(49)
-    
-    maybe = []
-
     kulo = False 
     ## APPEND FROM RIGHT 
     while kulo == False:
         c = 0
-        unused_indices = [i for i in range(60) if i not in used_index]
-        combi = list(itertools.combinations(unused_indices, 1))
+        unused_indices = [i for i in range(60) if i not in used_index ]
+        combi = set()
+        combi = [(i, j) for i in unused_indices for j in unused_indices if i != j]  # Generate combinations for all existing pairs
         values = [res_df.iloc[0, i] for i in range(res_df.shape[1])]
-        result_string = ''.join(values)
         for combination in combi:
             c = c+1
             temp_df = res_df.copy()
-                
-#            temp_df2 = ""
-#            for i in combination:
-#                temp_df2 += df.iloc[0, i]
-#            if optimal_check(result_string + temp_df2) == False:
-#                continue
 
             print("DONE:" + str(c) + "/" + str(len(combi)) ) 
             for i in combination:
                 temp_df[i] = df.iloc[:, i] 
             print(temp_df) 
-            if check_if_czech_substring(temp_df, 0, temp_df.shape[1]) and check_double_space(temp_df, 0, temp_df.shape[1]):
-                kulo = False
-                #res_df = temp_df.copy()
+            if  check_if_czech_prefix(temp_df, 0, temp_df.shape[1]) \
+                and check_manuall_fix(temp_df, 0 , temp_df.shape[1]) \
+                and check_double_space(temp_df, 0, temp_df.shape[1]):
+                res_df = temp_df.copy()
                 used_index.extend(combination)  # Add all indices in the current combination to used_index
+                kulo = False 
+                break
             else:
                 kulo = True
 
+    print("SOLUTION:")
+    print(res_df)
+    
+    print("")
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print("Execution time: {:.2f} seconds".format(execution_time))
 
 
 
