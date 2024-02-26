@@ -346,14 +346,6 @@ def main():
     for c in range(0, len(general)):
         ll.append(find_letter_column(df, str(general[c]), row_general))
 
-    # Optimalization todo remove 
-    print(ll)
-    ll[1].remove(2)
-    ll[1].remove(7)
-    ll[3].remove(0)
-    ll[4].remove(13)
-    ll[4].remove(15)
-
     combinations = itertools.product(*ll)
     result = [list(combo) for combo in combinations]
 
@@ -393,14 +385,14 @@ def main():
         if not combi:
             break
 
+        temp_df = res_df.copy()
         for combination in combi:
             c = c+1
-            temp_df = res_df.copy()
-
             print("DONE:" + str(c) + "/" + str(len(combi)) ) 
             for i in combination:
                 temp_df[i] = df.iloc[:, i] 
-            print(temp_df) 
+            print(temp_df)             
+
             if  check_if_czech_prefix(temp_df, 0, temp_df.shape[1]) \
                 and check_manuall_fix(temp_df, 0 , temp_df.shape[1]) \
                 and check_double_space(temp_df, 0, temp_df.shape[1]):
@@ -410,7 +402,14 @@ def main():
                 break
             else:
                 kulo = True
-                
+            
+            for i in combination:
+                temp_df.drop(columns=[i], inplace=True)
+
+    print("DECRYPTED")
+    for i in decrypted_text: 
+        print(i)
+     
     print("SOLUTION:")
     print(res_df)
     
